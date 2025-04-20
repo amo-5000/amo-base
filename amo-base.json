@@ -1,0 +1,145 @@
+{
+    "name": "AMO-Base",
+    "description": "An AI-powered assistant that answers questions about building the AMO events platform with Webflow, Airtable, Xano, n8n and WhatsApp API",
+    "version": "1.0.0",
+    "author": "AMO Team",
+    "tasks": [
+      {
+        "name": "📁 Project Setup",
+        "description": "Create the project structure and environment",
+        "steps": [
+          "Create project folder: amo-base",
+          "Create folders: scripts/, utils/",
+          "Create files: README.md, .gitignore, .env",
+          "Create virtual environment: python -m venv venv",
+          "Activate virtual environment: source venv/bin/activate (Linux/Mac) or venv\\Scripts\\activate (Windows)",
+          "Create .gitignore file with entries for venv/, .env, __pycache__/, *.pyc"
+        ]
+      },
+      {
+        "name": "📦 Dependencies Installation",
+        "description": "Install necessary packages for the AMO knowledge assistant",
+        "steps": [
+          "Install core packages: pip install langchain openai pinecone-client python-dotenv",
+          "Install UI package: pip install streamlit",
+          "Install additional tools: pip install langchain-community tiktoken",
+          "Freeze dependencies: pip freeze > requirements.txt"
+        ]
+      },
+      {
+        "name": "🔐 Environment Configuration",
+        "description": "Set up API keys and configuration for services",
+        "steps": [
+          "Create .env file with OPENAI_API_KEY=your-key-here",
+          "Add to .env: PINECONE_API_KEY=your-key-here",
+          "Add to .env: PINECONE_ENV=your-environment",
+          "Add to .env: PINECONE_INDEX=your-index-name-with-amo-docs",
+          "Add .env to .gitignore to prevent key exposure"
+        ]
+      },
+      {
+        "name": "🔍 Basic Query System",
+        "description": "Create a script to query your existing AMO documentation",
+        "steps": [
+          "Create scripts/query.py",
+          "Import necessary libraries (langchain, pinecone, openai)",
+          "Initialize Pinecone connection to your existing index",
+          "Set up OpenAIEmbeddings for vector search",
+          "Create RetrievalQA chain with specific prompt template for AMO events",
+          "Test with questions about Webflow, Airtable, Xano, n8n, and WhatsApp integration",
+          "Format and print results in a readable way"
+        ]
+      },
+      {
+        "name": "🧠 Add Conversational Memory",
+        "description": "Enable follow-up questions for complex AMO development workflows",
+        "steps": [
+          "Create scripts/chat.py",
+          "Set up ConversationBufferMemory for chat history",
+          "Create ConversationalRetrievalChain with memory",
+          "Add system prompt about AMO events platform knowledge",
+          "Create interactive CLI loop for testing questions",
+          "Test with multi-turn queries about event workflows"
+        ]
+      },
+      {
+        "name": "🎯 Add Relevant Context",
+        "description": "Improve answers by providing focused AMO-specific context",
+        "steps": [
+          "Create utils/prompts.py",
+          "Define AMO_SYSTEM_TEMPLATE with context about your business",
+          "Add information about Webflow, Airtable, Xano, n8n integration patterns",
+          "Create QA_TEMPLATE that includes event industry terminology",
+          "Update chains to use these custom prompts"
+        ]
+      },
+      {
+        "name": "🖥️ Create Streamlit Web Interface",
+        "description": "Build user-friendly UI for team access to AMO knowledge",
+        "steps": [
+          "Create app.py at project root",
+          "Design simple interface with AMO branding",
+          "Add quick topic buttons for common questions",
+          "Add chat history with session state",
+          "Add 'Clear Conversation' button",
+          "Run with: streamlit run app.py"
+        ]
+      }
+    ],
+    "events_integration_examples": [
+      {
+        "title": "Webflow Form to Airtable Registration",
+        "description": "Collect event registrations in Webflow and store in Airtable",
+        "components": ["Webflow", "n8n", "Airtable"]
+      },
+      {
+        "title": "WhatsApp Event Reminders",
+        "description": "Send automated event reminders via WhatsApp API",
+        "components": ["Airtable", "n8n", "WhatsApp API"]
+      },
+      {
+        "title": "Event Check-in System",
+        "description": "QR code check-in system using Xano as backend",
+        "components": ["Xano", "Webflow", "n8n"]
+      },
+      {
+        "title": "Dynamic Event Capacity",
+        "description": "Update event capacity dynamically based on registrations",
+        "components": ["Airtable", "Webflow", "n8n"]
+      }
+    ],
+    "resources": [
+      {
+        "name": "LangChain Documentation",
+        "url": "https://python.langchain.com/docs/get_started/introduction"
+      },
+      {
+        "name": "Pinecone Documentation",
+        "url": "https://docs.pinecone.io/docs/overview"
+      },
+      {
+        "name": "Streamlit Documentation",
+        "url": "https://docs.streamlit.io/"
+      },
+      {
+        "name": "n8n Documentation",
+        "url": "https://docs.n8n.io/"
+      },
+      {
+        "name": "Webflow Documentation",
+        "url": "https://developers.webflow.com/"
+      },
+      {
+        "name": "Airtable API Documentation",
+        "url": "https://airtable.com/developers/web/api/introduction"
+      },
+      {
+        "name": "WhatsApp Business API Documentation",
+        "url": "https://developers.facebook.com/docs/whatsapp/api/reference"
+      },
+      {
+        "name": "Xano Documentation",
+        "url": "https://docs.xano.com/"
+      }
+    ]
+  }
