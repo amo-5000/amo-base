@@ -22,13 +22,12 @@ from typing import List, Dict, Any
 
 # Import LangChain components
 from langchain.chains import ConversationalRetrievalChain
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.llms import OpenAI
+from langchain_openai import OpenAIEmbeddings, OpenAI
 from langchain.memory import ConversationBufferMemory
-from langchain.vectorstores import Pinecone
+from langchain_community.vectorstores import Pinecone
 
 # Import custom components
-import pinecone
+from pinecone import Pinecone as PineconeClient
 from utils.prompts import AMO_SYSTEM_PROMPT
 
 # Initialize environment variables
@@ -73,7 +72,7 @@ COMMON_QUESTIONS = {
 
 
 @st.cache_resource
-def initialize_pinecone() -> None:
+def initialize_pinecone() -> PineconeClient:
     """Initialize Pinecone with credentials from environment variables."""
     api_key = os.getenv("PINECONE_API_KEY")
     
@@ -81,8 +80,8 @@ def initialize_pinecone() -> None:
         st.error("Pinecone API key not found. Please check your .env file.")
         st.stop()
     
-    # As of January 2024, Pinecone no longer requires environment parameter
-    pinecone.init(api_key=api_key)
+    # As of 2024, Pinecone uses a class-based initialization
+    return PineconeClient(api_key=api_key)
 
 
 @st.cache_resource
@@ -94,7 +93,7 @@ def get_conversational_chain():
         ConversationalRetrievalChain: Chain for conversational question answering
     """
     # Initialize Pinecone
-    initialize_pinecone()
+    pc_client = initialize_pinecone()
     
     # Get index name from environment
     index_name = os.getenv("PINECONE_INDEX")
@@ -102,9 +101,17 @@ def get_conversational_chain():
         st.error("Pinecone index name not found. Please check your .env file.")
         st.stop()
     
-    # Check if index exists
-    if index_name not in pinecone.list_indexes():
-        st.error(f"Pinecone index '{index_name}' not found. Please check your configuration.")
+    # Get the index
+    index = pc_client.Index(index_name)
+    
+    # Test if index is accessible
+    try:
+        index_stats = index.describe_index_stats()
+        if not index_stats:
+            st.error(f"Pinecone index '{index_name}' seems to be empty or inaccessible.")
+            st.stop()
+    except Exception as e:
+        st.error(f"Error connecting to Pinecone index: {str(e)}")
         st.stop()
     
     # Initialize OpenAI
@@ -117,9 +124,10 @@ def get_conversational_chain():
     embeddings = OpenAIEmbeddings()
     
     # Create vector store
-    vectorstore = Pinecone.from_existing_index(
-        index_name=index_name,
-        embedding=embeddings
+    vectorstore = Pinecone(
+        index=index,
+        embedding=embeddings,
+        text_key="text"  # Adjust this based on your data structure
     )
     
     # Create memory
@@ -269,4 +277,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main() 
